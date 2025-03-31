@@ -27,6 +27,7 @@ const User = sequelize.define("User", {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  avatarURL: DataTypes.STRING,
 });
 
 // User.sync({ force: true });

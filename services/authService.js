@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import User from "../models/User.js";
 import HttpError from "../helpers/HttpError.js";
 import { createToken } from "../helpers/jwt.js";
+import gravatar from "gravatar";
 
 export const findUser = (query) =>
   User.findOne({
@@ -30,8 +31,16 @@ export const signupUser = async (payload) => {
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
+  const avatarURL = gravatar.url(email, {
+    s: "250",
+    d: "retro",
+  });
 
-  const newUser = await User.create({ ...payload, password: hashPassword });
+  const newUser = await User.create({
+    ...payload,
+    password: hashPassword,
+    avatarURL,
+  });
   return newUser;
 };
 
@@ -67,4 +76,13 @@ export const signinUser = async (payload) => {
 
 export const logoutUser = (query) => {
   return updateUser(query, { token: null });
+};
+
+export const updateUserAvatar = async (email, avatarURL) => {
+  const user = await findUser(email);
+  if (!user) {
+    throw HttpError(401, "Not authorized");
+  }
+
+  return user.update({ avatarURL }, { returning: true });
 };

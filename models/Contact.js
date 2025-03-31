@@ -24,7 +24,6 @@ const Contact = sequelize.define("Contact", {
     allowNull: false,
   },
 });
-
 // Contact.sync({ force: true });
 
 export default Contact;
